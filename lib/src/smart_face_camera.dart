@@ -441,6 +441,7 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
     if (!_alreadyCheckingImage && mounted) {
       _alreadyCheckingImage = true;
       try {
+        _faceNotDetected();
         await FaceIdentifier.scanImage(
                 cameraImage: cameraImage, camera: cameraController!.description)
             .then((result) async {
@@ -451,21 +452,14 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
               if (result.wellPositioned) {
                 if (widget.onFaceDetected != null) {
                   widget.onFaceDetected!.call(result.face);
-                } else {
-                  _faceNotDetected();
                 }
                 if (widget.autoCapture) {
                   _onTakePictureButtonPressed();
                 }
-              } else {
-                _faceNotDetected();
               }
             } catch (e) {
               logError(e.toString());
-              _faceNotDetected();
             }
-          } else {
-            _faceNotDetected();
           }
         });
         _alreadyCheckingImage = false;
