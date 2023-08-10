@@ -476,9 +476,8 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
   }
 
   _faceNotDetected() {
-    if(widget.onFaceNotDetected != null) {
+    if (widget.onFaceNotDetected != null) {
       widget.onFaceNotDetected!();
     }
   }
-
 }
