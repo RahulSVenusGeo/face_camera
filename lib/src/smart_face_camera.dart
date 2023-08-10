@@ -27,6 +27,7 @@ class SmartFaceCamera extends StatefulWidget {
   final CameraOrientation? orientation;
   final void Function(File? image) onCapture;
   final void Function(Face? face)? onFaceDetected;
+  final void Function()? onFaceNotDetected;
   final Widget? captureControlIcon;
   final Widget? lensControlIcon;
   final FlashControlBuilder? flashControlBuilder;
@@ -48,6 +49,7 @@ class SmartFaceCamera extends StatefulWidget {
           fontSize: 14, height: 1.5, fontWeight: FontWeight.w400),
       required this.onCapture,
       this.onFaceDetected,
+      this.onFaceNotDetected,
       this.captureControlIcon,
       this.lensControlIcon,
       this.flashControlBuilder,
@@ -449,14 +451,21 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
               if (result.wellPositioned) {
                 if (widget.onFaceDetected != null) {
                   widget.onFaceDetected!.call(result.face);
+                } else {
+                  _faceNotDetected();
                 }
                 if (widget.autoCapture) {
                   _onTakePictureButtonPressed();
                 }
+              } else {
+                _faceNotDetected();
               }
             } catch (e) {
               logError(e.toString());
+              _faceNotDetected();
             }
+          } else {
+            _faceNotDetected();
           }
         });
         _alreadyCheckingImage = false;
@@ -465,4 +474,11 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
       }
     }
   }
+
+  _faceNotDetected() {
+    if(widget.onFaceNotDetected != null) {
+      widget.onFaceNotDetected!();
+    }
+  }
+
 }
